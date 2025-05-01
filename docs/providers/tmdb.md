@@ -30,7 +30,7 @@ tmdb.fetchTrending("the flash").then(data => {
 })
 ```
 
-returns a promise which resolves into an array of anime. (*[`Promise<ISearch<(IMovieResult | IAnimeResult | IPeopleResult)[]>>`](https://github.com/consumet/consumet.ts/blob/master/src/models/types.ts#L328-L336)*)\
+returns a promise which resolves into an array of anime. (*[`Promise<ISearch<(IMovieResult | IAnimeResult | IPeopleResult)[]>>`](https://github.com/aryakumarjha/consumet.ts/blob/master/src/models/types.ts#L328-L336)*)\
 output:
 ```js
 {
@@ -81,7 +81,7 @@ tmdb.search("the flash").then(data => {
 })
 ```
 
-returns a promise which resolves into an array of anime. (*[`Promise<ISearch<IMovieResult[]>>`](https://github.com/consumet/consumet.ts/blob/master/src/models/types.ts#L328-L336)*)\
+returns a promise which resolves into an array of anime. (*[`Promise<ISearch<IMovieResult[]>>`](https://github.com/aryakumarjha/consumet.ts/blob/master/src/models/types.ts#L328-L336)*)\
 output:
 ```js
 {

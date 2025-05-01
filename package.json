@@ -30,7 +30,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/consumet/consumet.ts.git"
+    "url": "git+https://github.com/aryakumarjha/consumet.ts.git"
   },
   "keywords": [
     "consumet",
@@ -51,9 +51,9 @@
   ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/consumet/consumet.ts/issues"
+    "url": "https://github.com/aryakumarjha/consumet.ts/issues"
   },
-  "homepage": "https://github.com/consumet/consumet.ts#readme",
+  "homepage": "https://github.com/aryakumarjha/consumet.ts#readme",
   "dependencies": {
     "ascii-url-encoder": "^1.2.0",
     "axios": "^1.7.9",
@@ -86,10 +86,10 @@
     "template": "keepachangelog",
     "preset": "typescript-preset-eslint",
     "output": "CHANGELOG.md",
-    "commitUrl": "https://github.com/consumet/consumet.ts/commit/{id}",
-    "compareUrl": "https://github.com/consumet/consumet.ts/compare/{from}...{to}",
-    "issueUrl": "https://github.com/consumet/consumet.ts/issues/{id}",
-    "mergeUrl": "https://github.com/consumet/consumet.ts/pull/{id}"
+    "commitUrl": "https://github.com/aryakumarjha/consumet.ts/commit/{id}",
+    "compareUrl": "https://github.com/aryakumarjha/consumet.ts/compare/{from}...{to}",
+    "issueUrl": "https://github.com/aryakumarjha/consumet.ts/issues/{id}",
+    "mergeUrl": "https://github.com/aryakumarjha/consumet.ts/pull/{id}"
   },
   "directories": {
     "doc": "docs",
@@ -97,5 +97,5 @@
     "test": "test",
     "lib": "src"
   },
-  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
+  "packageManager": "bun@1.2.10"
 }

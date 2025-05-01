@@ -28,7 +28,7 @@ To contribute to Consumet code, you need to know the following:
        - [DevTools](https://developer.mozilla.org/en-US/docs/Learn/Common_questions/What_are_browser_developer_tools)
 
 ### Cloning the repository
-1. [Fork the repository](https://github.com/consumet/consumet.ts/fork)
+1. [Fork the repository](https://github.com/aryakumarjha/consumet.ts/fork)
 2. Clone your fork to your local machine using the following command **(make sure to change `<your_username>` to your GitHub username)**:
 ```sh
 git clone https://github.com/<your-username>/consumet-api.git

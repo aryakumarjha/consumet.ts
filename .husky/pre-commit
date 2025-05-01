@@ -1,2 +1,2 @@
 
-yarn lint && yarn build && git add .
+bun lint && bun run build && git add .
