@@ -96,6 +96,7 @@ declare class Zoro extends AnimeParser {
      * @param page number
      */
     fetchSpecial(page?: number): Promise<ISearch<IAnimeResult>>;
+    fetchHome(): Promise<Record<string, any>>;
     fetchGenres(): Promise<string[]>;
     /**
      * @param page number
@@ -108,7 +109,9 @@ declare class Zoro extends AnimeParser {
      */
     fetchSchedule(date?: string): Promise<ISearch<IAnimeResult>>;
     fetchSpotlight(): Promise<ISearch<IAnimeResult>>;
+    private parseSpotlight;
     fetchTrending(): Promise<ISearch<IAnimeResult>>;
+    private parseTrending;
     fetchSearchSuggestions(query: string): Promise<ISearch<IAnimeResult>>;
     /**
      * Fetches the list of episodes that the user is currently watching.

@@ -303,6 +303,28 @@ class Zoro extends AnimeParser {
     return this.scrapeCardPage(`${this.baseUrl}/special?page=${page}`);
   }
 
+  async fetchHome(): Promise<Record<string, any>> {
+    try {
+      const res = {
+        spotlight: {},
+        trending: {},
+      };
+
+      const { data } = await this.client.get(`${this.baseUrl}/home`);
+      const $ = load(data);
+
+      const spotlight = this.parseSpotlight($);
+      const trending = this.parseTrending($);
+
+      res.spotlight = spotlight;
+      res.trending = trending;
+
+      return res;
+    } catch (err) {
+      throw new Error('Something went wrong. Please try again later.');
+    }
+  }
+
   async fetchGenres(): Promise<string[]> {
     try {
       const res: string[] = [];
@@ -377,64 +399,76 @@ class Zoro extends AnimeParser {
       const { data } = await this.client.get(`${this.baseUrl}/home`);
       const $ = load(data);
 
-      $('#slider div.swiper-wrapper div.swiper-slide').each((i, el) => {
-        const card = $(el);
-        const titleElement = card.find('div.desi-head-title');
-        const id =
-          card
-            .find('div.desi-buttons .btn-secondary')
-            .attr('href')
-            ?.match(/\/([^/]+)$/)?.[1] || null;
-        const img = card.find('img.film-poster-img');
-        res.results.push({
-          id: id!,
-          title: titleElement.text(),
-          japaneseTitle: titleElement.attr('data-jname'),
-          banner: img.attr('data-src') || img.attr('src') || null,
-          rank: parseInt(card.find('.desi-sub-text').text().match(/(\d+)/g)?.[0]!),
-          url: `${this.baseUrl}/${id}`,
-          type: card.find('div.sc-detail .scd-item:nth-child(1)').text().trim() as MediaFormat,
-          duration: card.find('div.sc-detail > div:nth-child(2)').text().trim(),
-          releaseDate: card.find('div.sc-detail > div:nth-child(3)').text().trim(),
-          quality: card.find('div.sc-detail > div:nth-child(4)').text().trim(),
-          sub: parseInt(card.find('div.sc-detail div.tick-sub').text().trim()) || 0,
-          dub: parseInt(card.find('div.sc-detail div.tick-dub').text().trim()) || 0,
-          episodes: parseInt(card.find('div.sc-detail div.tick-eps').text()) || 0,
-          description: card.find('div.desi-description').text().trim(),
-        });
-      });
+      res.results = this.parseSpotlight($);
 
       return res;
     } catch (error) {
       throw new Error('Something went wrong. Please try again later.');
     }
   }
+
+  private parseSpotlight = ($: CheerioAPI): IAnimeResult[] => {
+    const results: IAnimeResult[] = [];
+    $('#slider div.swiper-wrapper div.swiper-slide').each((i, el) => {
+      const card = $(el);
+      const titleElement = card.find('div.desi-head-title');
+      const id =
+        card
+          .find('div.desi-buttons .btn-secondary')
+          .attr('href')
+          ?.match(/\/([^/]+)$/)?.[1] || null;
+      const img = card.find('img.film-poster-img');
+      results.push({
+        id: id!,
+        title: titleElement.text(),
+        japaneseTitle: titleElement.attr('data-jname'),
+        banner: img.attr('data-src') || img.attr('src') || null,
+        rank: parseInt(card.find('.desi-sub-text').text().match(/(\d+)/g)?.[0]!),
+        url: `${this.baseUrl}/${id}`,
+        type: card.find('div.sc-detail .scd-item:nth-child(1)').text().trim() as MediaFormat,
+        duration: card.find('div.sc-detail > div:nth-child(2)').text().trim(),
+        releaseDate: card.find('div.sc-detail > div:nth-child(3)').text().trim(),
+        quality: card.find('div.sc-detail > div:nth-child(4)').text().trim(),
+        sub: parseInt(card.find('div.sc-detail div.tick-sub').text().trim()) || 0,
+        dub: parseInt(card.find('div.sc-detail div.tick-dub').text().trim()) || 0,
+        episodes: parseInt(card.find('div.sc-detail div.tick-eps').text()) || 0,
+        description: card.find('div.desi-description').text().trim(),
+      });
+    });
+    return results;
+  };
 
   async fetchTrending(): Promise<ISearch<IAnimeResult>> {
     try {
       const res: ISearch<IAnimeResult> = { results: [] };
       const { data } = await this.client.get(`${this.baseUrl}/home`);
       const $ = load(data);
-      const trendingList = $('#anime-trending .trending-list .swiper-slide');
-      trendingList.each((i, el) => {
-        const card = $(el);
-        const titleElement = card.find('div.film-title');
-        const id = card.find('a.film-poster').attr('href')?.split('/')[1];
-        const img = card.find('img.film-poster-img');
-        res.results.push({
-          id: id!,
-          title: titleElement.text(),
-          japaneseTitle: titleElement.attr('data-jname'),
-          banner: img.attr('data-src') || img.attr('src') || null,
-          rank: parseInt(card.find('.number span').text()),
-        });
-      });
+      const trending = this.parseTrending($);
+      res.results = trending;
 
       return res;
     } catch (error) {
       throw new Error('Something went wrong. Please try again later.');
     }
   }
+
+  private parseTrending = ($: CheerioAPI): IAnimeResult[] => {
+    const results: IAnimeResult[] = [];
+    $('#anime-trending .trending-list .swiper-slide').each((i, el) => {
+      const card = $(el);
+      const titleElement = card.find('div.film-title');
+      const id = card.find('a.film-poster').attr('href')?.split('/')[1];
+      const img = card.find('img.film-poster-img');
+      results.push({
+        id: id!,
+        title: titleElement.text(),
+        japaneseTitle: titleElement.attr('data-jname'),
+        banner: img.attr('data-src') || img.attr('src') || null,
+        rank: parseInt(card.find('.number span').text()),
+      });
+    });
+    return results;
+  };
 
   async fetchSearchSuggestions(query: string): Promise<ISearch<IAnimeResult>> {
     try {

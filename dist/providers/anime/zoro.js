@@ -11,6 +11,53 @@ class Zoro extends models_1.AnimeParser {
         this.baseUrl = 'https://hianimez.to';
         this.logo = 'https://is3-ssl.mzstatic.com/image/thumb/Purple112/v4/7e/91/00/7e9100ee-2b62-0942-4cdc-e9b93252ce1c/source/512x512bb.jpg';
         this.classPath = 'ANIME.Zoro';
+        this.parseSpotlight = ($) => {
+            const results = [];
+            $('#slider div.swiper-wrapper div.swiper-slide').each((i, el) => {
+                var _a, _b, _c;
+                const card = $(el);
+                const titleElement = card.find('div.desi-head-title');
+                const id = ((_b = (_a = card
+                    .find('div.desi-buttons .btn-secondary')
+                    .attr('href')) === null || _a === void 0 ? void 0 : _a.match(/\/([^/]+)$/)) === null || _b === void 0 ? void 0 : _b[1]) || null;
+                const img = card.find('img.film-poster-img');
+                results.push({
+                    id: id,
+                    title: titleElement.text(),
+                    japaneseTitle: titleElement.attr('data-jname'),
+                    banner: img.attr('data-src') || img.attr('src') || null,
+                    rank: parseInt((_c = card.find('.desi-sub-text').text().match(/(\d+)/g)) === null || _c === void 0 ? void 0 : _c[0]),
+                    url: `${this.baseUrl}/${id}`,
+                    type: card.find('div.sc-detail .scd-item:nth-child(1)').text().trim(),
+                    duration: card.find('div.sc-detail > div:nth-child(2)').text().trim(),
+                    releaseDate: card.find('div.sc-detail > div:nth-child(3)').text().trim(),
+                    quality: card.find('div.sc-detail > div:nth-child(4)').text().trim(),
+                    sub: parseInt(card.find('div.sc-detail div.tick-sub').text().trim()) || 0,
+                    dub: parseInt(card.find('div.sc-detail div.tick-dub').text().trim()) || 0,
+                    episodes: parseInt(card.find('div.sc-detail div.tick-eps').text()) || 0,
+                    description: card.find('div.desi-description').text().trim(),
+                });
+            });
+            return results;
+        };
+        this.parseTrending = ($) => {
+            const results = [];
+            $('#anime-trending .trending-list .swiper-slide').each((i, el) => {
+                var _a;
+                const card = $(el);
+                const titleElement = card.find('div.film-title');
+                const id = (_a = card.find('a.film-poster').attr('href')) === null || _a === void 0 ? void 0 : _a.split('/')[1];
+                const img = card.find('img.film-poster-img');
+                results.push({
+                    id: id,
+                    title: titleElement.text(),
+                    japaneseTitle: titleElement.attr('data-jname'),
+                    banner: img.attr('data-src') || img.attr('src') || null,
+                    rank: parseInt(card.find('.number span').text()),
+                });
+            });
+            return results;
+        };
         /**
          * @param id Anime id
          */
@@ -595,6 +642,24 @@ class Zoro extends models_1.AnimeParser {
         }
         return this.scrapeCardPage(`${this.baseUrl}/special?page=${page}`);
     }
+    async fetchHome() {
+        try {
+            const res = {
+                spotlight: {},
+                trending: {},
+            };
+            const { data } = await this.client.get(`${this.baseUrl}/home`);
+            const $ = (0, cheerio_1.load)(data);
+            const spotlight = this.parseSpotlight($);
+            const trending = this.parseTrending($);
+            res.spotlight = spotlight;
+            res.trending = trending;
+            return res;
+        }
+        catch (err) {
+            throw new Error('Something went wrong. Please try again later.');
+        }
+    }
     async fetchGenres() {
         try {
             const res = [];
@@ -662,31 +727,7 @@ class Zoro extends models_1.AnimeParser {
             const res = { results: [] };
             const { data } = await this.client.get(`${this.baseUrl}/home`);
             const $ = (0, cheerio_1.load)(data);
-            $('#slider div.swiper-wrapper div.swiper-slide').each((i, el) => {
-                var _a, _b, _c;
-                const card = $(el);
-                const titleElement = card.find('div.desi-head-title');
-                const id = ((_b = (_a = card
-                    .find('div.desi-buttons .btn-secondary')
-                    .attr('href')) === null || _a === void 0 ? void 0 : _a.match(/\/([^/]+)$/)) === null || _b === void 0 ? void 0 : _b[1]) || null;
-                const img = card.find('img.film-poster-img');
-                res.results.push({
-                    id: id,
-                    title: titleElement.text(),
-                    japaneseTitle: titleElement.attr('data-jname'),
-                    banner: img.attr('data-src') || img.attr('src') || null,
-                    rank: parseInt((_c = card.find('.desi-sub-text').text().match(/(\d+)/g)) === null || _c === void 0 ? void 0 : _c[0]),
-                    url: `${this.baseUrl}/${id}`,
-                    type: card.find('div.sc-detail .scd-item:nth-child(1)').text().trim(),
-                    duration: card.find('div.sc-detail > div:nth-child(2)').text().trim(),
-                    releaseDate: card.find('div.sc-detail > div:nth-child(3)').text().trim(),
-                    quality: card.find('div.sc-detail > div:nth-child(4)').text().trim(),
-                    sub: parseInt(card.find('div.sc-detail div.tick-sub').text().trim()) || 0,
-                    dub: parseInt(card.find('div.sc-detail div.tick-dub').text().trim()) || 0,
-                    episodes: parseInt(card.find('div.sc-detail div.tick-eps').text()) || 0,
-                    description: card.find('div.desi-description').text().trim(),
-                });
-            });
+            res.results = this.parseSpotlight($);
             return res;
         }
         catch (error) {
@@ -698,21 +739,8 @@ class Zoro extends models_1.AnimeParser {
             const res = { results: [] };
             const { data } = await this.client.get(`${this.baseUrl}/home`);
             const $ = (0, cheerio_1.load)(data);
-            const trendingList = $('#anime-trending .trending-list .swiper-slide');
-            trendingList.each((i, el) => {
-                var _a;
-                const card = $(el);
-                const titleElement = card.find('div.film-title');
-                const id = (_a = card.find('a.film-poster').attr('href')) === null || _a === void 0 ? void 0 : _a.split('/')[1];
-                const img = card.find('img.film-poster-img');
-                res.results.push({
-                    id: id,
-                    title: titleElement.text(),
-                    japaneseTitle: titleElement.attr('data-jname'),
-                    banner: img.attr('data-src') || img.attr('src') || null,
-                    rank: parseInt(card.find('.number span').text()),
-                });
-            });
+            const trending = this.parseTrending($);
+            res.results = trending;
             return res;
         }
         catch (error) {
