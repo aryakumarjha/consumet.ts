@@ -389,10 +389,9 @@ class Zoro extends models_1.AnimeParser {
             // #anime-featured .anif-block-01 (Top Airing)
             const results = [];
             $('#anime-featured .anif-block-01 ul.ulclear > li').each((i, el) => {
-                var _a;
                 const card = $(el);
                 const poster = card.find('.film-poster a, .film-poster');
-                const id = ((_a = poster.attr('href')) === null || _a === void 0 ? void 0 : _a.split('/')[1]) || poster.data('id') || card.find('.film-poster').data('id');
+                const id = poster.attr('href') || poster.data('id') || card.find('.film-poster').data('id');
                 const img = card.find('img.film-poster-img');
                 const titleElement = card.find('.film-name a');
                 results.push({
@@ -412,10 +411,9 @@ class Zoro extends models_1.AnimeParser {
             // #anime-featured .anif-block-03 (Most Popular)
             const results = [];
             $('#anime-featured .anif-block-03 ul.ulclear > li').each((i, el) => {
-                var _a;
                 const card = $(el);
                 const poster = card.find('.film-poster a, .film-poster');
-                const id = ((_a = poster.attr('href')) === null || _a === void 0 ? void 0 : _a.split('/')[1]) || poster.data('id') || card.find('.film-poster').data('id');
+                const id = poster.attr('href') || poster.data('id') || card.find('.film-poster').data('id');
                 const img = card.find('img.film-poster-img');
                 const titleElement = card.find('.film-name a');
                 results.push({
@@ -439,10 +437,9 @@ class Zoro extends models_1.AnimeParser {
                 .first()
                 .find('ul.ulclear > li')
                 .each((i, el) => {
-                var _a;
                 const card = $(el);
                 const poster = card.find('.film-poster a, .film-poster');
-                const id = ((_a = poster.attr('href')) === null || _a === void 0 ? void 0 : _a.split('/')[1]) || poster.data('id') || card.find('.film-poster').data('id');
+                const id = poster.attr('href') || poster.data('id') || card.find('.film-poster').data('id');
                 const img = card.find('img.film-poster-img');
                 const titleElement = card.find('.film-name a');
                 results.push({
@@ -465,10 +462,9 @@ class Zoro extends models_1.AnimeParser {
                 .eq(1)
                 .find('ul.ulclear > li')
                 .each((i, el) => {
-                var _a;
                 const card = $(el);
                 const poster = card.find('.film-poster a, .film-poster');
-                const id = ((_a = poster.attr('href')) === null || _a === void 0 ? void 0 : _a.split('/')[1]) || poster.data('id') || card.find('.film-poster').data('id');
+                const id = poster.attr('href') || poster.data('id') || card.find('.film-poster').data('id');
                 const img = card.find('img.film-poster-img');
                 const titleElement = card.find('.film-name a');
                 results.push({
