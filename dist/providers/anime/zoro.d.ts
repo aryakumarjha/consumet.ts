@@ -108,6 +108,7 @@ declare class Zoro extends AnimeParser {
      */
     fetchSchedule(date?: string): Promise<ISearch<IAnimeResult>>;
     fetchSpotlight(): Promise<ISearch<IAnimeResult>>;
+    fetchTrending(): Promise<ISearch<IAnimeResult>>;
     fetchSearchSuggestions(query: string): Promise<ISearch<IAnimeResult>>;
     /**
      * Fetches the list of episodes that the user is currently watching.

@@ -410,6 +410,32 @@ class Zoro extends AnimeParser {
     }
   }
 
+  async fetchTrending(): Promise<ISearch<IAnimeResult>> {
+    try {
+      const res: ISearch<IAnimeResult> = { results: [] };
+      const { data } = await this.client.get(`${this.baseUrl}/home`);
+      const $ = load(data);
+      const trendingList = $('#anime-trending .trending-list .swiper-slide');
+      trendingList.each((i, el) => {
+        const card = $(el);
+        const titleElement = card.find('div.film-title');
+        const id = card.find('a.film-poster').attr('href')?.split('/')[1];
+        const img = card.find('img.film-poster-img');
+        res.results.push({
+          id: id!,
+          title: titleElement.text(),
+          japaneseTitle: titleElement.attr('data-jname'),
+          banner: img.attr('data-src') || img.attr('src') || null,
+          rank: parseInt(card.find('.number span').text()),
+        });
+      });
+
+      return res;
+    } catch (error) {
+      throw new Error('Something went wrong. Please try again later.');
+    }
+  }
+
   async fetchSearchSuggestions(query: string): Promise<ISearch<IAnimeResult>> {
     try {
       const encodedQuery = encodeURIComponent(query);

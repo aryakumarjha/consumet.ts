@@ -693,6 +693,32 @@ class Zoro extends models_1.AnimeParser {
             throw new Error('Something went wrong. Please try again later.');
         }
     }
+    async fetchTrending() {
+        try {
+            const res = { results: [] };
+            const { data } = await this.client.get(`${this.baseUrl}/home`);
+            const $ = (0, cheerio_1.load)(data);
+            const trendingList = $('#anime-trending .trending-list .swiper-slide');
+            trendingList.each((i, el) => {
+                var _a;
+                const card = $(el);
+                const titleElement = card.find('div.film-title');
+                const id = (_a = card.find('a.film-poster').attr('href')) === null || _a === void 0 ? void 0 : _a.split('/')[1];
+                const img = card.find('img.film-poster-img');
+                res.results.push({
+                    id: id,
+                    title: titleElement.text(),
+                    japaneseTitle: titleElement.attr('data-jname'),
+                    banner: img.attr('data-src') || img.attr('src') || null,
+                    rank: parseInt(card.find('.number span').text()),
+                });
+            });
+            return res;
+        }
+        catch (error) {
+            throw new Error('Something went wrong. Please try again later.');
+        }
+    }
     async fetchSearchSuggestions(query) {
         try {
             const encodedQuery = encodeURIComponent(query);
