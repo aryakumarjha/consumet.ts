@@ -413,7 +413,7 @@ class Zoro extends models_1.AnimeParser {
             const results = [];
             $('#anime-featured .anif-block-03 ul.ulclear > li').each((i, el) => {
                 const card = $(el);
-                const poster = card.find('.film-poster a, .film-poster');
+                const poster = card.find('.film-poster a');
                 const id = poster.attr('href') || poster.data('id') || card.find('.film-poster').data('id');
                 const img = card.find('img.film-poster-img');
                 const titleElement = card.find('.film-name a');
@@ -439,7 +439,7 @@ class Zoro extends models_1.AnimeParser {
                 .find('ul.ulclear > li')
                 .each((i, el) => {
                 const card = $(el);
-                const poster = card.find('.film-poster a, .film-poster');
+                const poster = card.find('.film-poster a');
                 const id = poster.attr('href') || poster.data('id') || card.find('.film-poster').data('id');
                 const img = card.find('img.film-poster-img');
                 const titleElement = card.find('.film-name a');
@@ -464,7 +464,7 @@ class Zoro extends models_1.AnimeParser {
                 .find('ul.ulclear > li')
                 .each((i, el) => {
                 const card = $(el);
-                const poster = card.find('.film-poster a, .film-poster');
+                const poster = card.find('.film-poster a');
                 const id = poster.attr('href') || poster.data('id') || card.find('.film-poster').data('id');
                 const img = card.find('img.film-poster-img');
                 const titleElement = card.find('.film-name a');
