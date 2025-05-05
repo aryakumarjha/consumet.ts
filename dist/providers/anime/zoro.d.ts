@@ -131,6 +131,11 @@ declare class Zoro extends AnimeParser {
      * @param subOrDub sub or dub (default `SubOrSub.SUB`) (optional)
      */
     fetchEpisodeSources: (episodeId: string, server?: StreamingServers, subOrDub?: SubOrSub) => Promise<ISource>;
+    /**
+     * @deprecated
+     * @param episodeId Episode id
+     */
+    fetchEpisodeServers: (episodeId: string) => Promise<IEpisodeServer[]>;
     private verifyLoginState;
     private retrieveServerId;
     /**
@@ -141,10 +146,13 @@ declare class Zoro extends AnimeParser {
      * @param $ cheerio instance
      */
     private scrapeCard;
-    /**
-     * @deprecated
-     * @param episodeId Episode id
-     */
-    fetchEpisodeServers: (episodeId: string) => Promise<IEpisodeServer[]>;
+    private parseTopAiring;
+    private parseMostPopular;
+    private parseMostFavorite;
+    private parseLatestCompleted;
+    private parseRecentlyUpdated;
+    private parseRecentlyAdded;
+    private parseTopUpcoming;
+    private parseGenres;
 }
 export default Zoro;

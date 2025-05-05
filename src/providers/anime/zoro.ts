@@ -308,6 +308,14 @@ class Zoro extends AnimeParser {
       const res = {
         spotlight: {},
         trending: {},
+        topAiring: {},
+        mostPopular: {},
+        mostFavorite: {},
+        latestCompleted: {},
+        recentlyUpdated: {},
+        recentlyAdded: {},
+        topUpcoming: {},
+        genres: {},
       };
 
       const { data } = await this.client.get(`${this.baseUrl}/home`);
@@ -315,9 +323,25 @@ class Zoro extends AnimeParser {
 
       const spotlight = this.parseSpotlight($);
       const trending = this.parseTrending($);
+      const topAiring = this.parseTopAiring($);
+      const mostPopular = this.parseMostPopular($);
+      const mostFavorite = this.parseMostFavorite($);
+      const latestCompleted = this.parseLatestCompleted($);
+      const recentlyUpdated = this.parseRecentlyUpdated($);
+      const recentlyAdded = this.parseRecentlyAdded($);
+      const topUpcoming = this.parseTopUpcoming($);
+      const genres = this.parseGenres($);
 
       res.spotlight = spotlight;
       res.trending = trending;
+      res.topAiring = topAiring;
+      res.mostPopular = mostPopular;
+      res.mostFavorite = mostFavorite;
+      res.latestCompleted = latestCompleted;
+      res.recentlyUpdated = recentlyUpdated;
+      res.recentlyAdded = recentlyAdded;
+      res.topUpcoming = topUpcoming;
+      res.genres = genres;
 
       return res;
     } catch (err) {
@@ -608,7 +632,7 @@ class Zoro extends AnimeParser {
       // Movie, TV, OVA, ONA, Special, Music
       info.type = $('span.item').last().prev().prev().text().toUpperCase() as MediaFormat;
       info.url = `${this.baseUrl}/${id}`;
-      info.recommendations = await this.scrapeCard($);
+      info.recommendations = this.scrapeCard($);
       info.relatedAnime = [];
       $('#main-sidebar section:nth-child(1) div.anif-block-ul li').each((i, ele) => {
         const card = $(ele);
@@ -833,6 +857,14 @@ class Zoro extends AnimeParser {
     }
   };
 
+  /**
+   * @deprecated
+   * @param episodeId Episode id
+   */
+  override fetchEpisodeServers = (episodeId: string): Promise<IEpisodeServer[]> => {
+    throw new Error('Method not implemented.');
+  };
+
   private verifyLoginState = async (connectSid: string): Promise<boolean> => {
     try {
       const { data } = await this.client.get(`${this.baseUrl}/ajax/login-state`, {
@@ -888,7 +920,7 @@ class Zoro extends AnimeParser {
         res.totalPages = parseInt(totalPages);
       }
 
-      res.results = await this.scrapeCard($);
+      res.results = this.scrapeCard($);
       if (res.results.length === 0) {
         res.currentPage = 0;
         res.hasNextPage = false;
@@ -903,7 +935,7 @@ class Zoro extends AnimeParser {
   /**
    * @param $ cheerio instance
    */
-  private scrapeCard = async ($: CheerioAPI): Promise<IAnimeResult[]> => {
+  private scrapeCard = ($: CheerioAPI): IAnimeResult[] => {
     try {
       const results: IAnimeResult[] = [];
 
@@ -938,12 +970,22 @@ class Zoro extends AnimeParser {
       throw new Error('Something went wrong. Please try again later.');
     }
   };
-  /**
-   * @deprecated
-   * @param episodeId Episode id
-   */
-  override fetchEpisodeServers = (episodeId: string): Promise<IEpisodeServer[]> => {
-    throw new Error('Method not implemented.');
+
+  // Helper methods for parsing homepage sections (assuming they exist and return IAnimeResult[])
+  private parseTopAiring = ($: CheerioAPI): IAnimeResult[] => this.scrapeCard($); // Placeholder
+  private parseMostPopular = ($: CheerioAPI): IAnimeResult[] => this.scrapeCard($); // Placeholder
+  private parseMostFavorite = ($: CheerioAPI): IAnimeResult[] => this.scrapeCard($); // Placeholder
+  private parseLatestCompleted = ($: CheerioAPI): IAnimeResult[] => this.scrapeCard($); // Placeholder
+  private parseRecentlyUpdated = ($: CheerioAPI): IAnimeResult[] => this.scrapeCard($); // Placeholder
+  private parseRecentlyAdded = ($: CheerioAPI): IAnimeResult[] => this.scrapeCard($); // Placeholder
+  private parseTopUpcoming = ($: CheerioAPI): IAnimeResult[] => this.scrapeCard($); // Placeholder
+  private parseGenres = ($: CheerioAPI): string[] => {
+    // Placeholder
+    const genres: string[] = [];
+    $('#main-sidebar ul.sb-genre-list li a').each((i, el) => {
+      genres.push($(el).text().trim());
+    });
+    return genres;
   };
 }
 
@@ -951,6 +993,8 @@ class Zoro extends AnimeParser {
 //   const zoro = new Zoro();
 //   const anime = await zoro.search('Dandadan');
 //   const info = await zoro.fetchAnimeInfo('solo-leveling-season-2-arise-from-the-shadow-19413');
+//   const servers = await zoro.fetchEpisodeServers('solo-leveling-season-2-arise-from-the-shadow-19413$episode$131394$dub');
+//   console.log(servers);
 //   const sources = await zoro.fetchEpisodeSources(
 //     'solo-leveling-season-2-arise-from-the-shadow-19413$episode$131394$dub',
 //     StreamingServers.VidCloud,
