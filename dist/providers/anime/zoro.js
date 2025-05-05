@@ -384,14 +384,175 @@ class Zoro extends models_1.AnimeParser {
                 throw new Error('Something went wrong. Please try again later.');
             }
         };
-        // Helper methods for parsing homepage sections (assuming they exist and return IAnimeResult[])
-        this.parseTopAiring = ($) => this.scrapeCard($); // Placeholder
-        this.parseMostPopular = ($) => this.scrapeCard($); // Placeholder
-        this.parseMostFavorite = ($) => this.scrapeCard($); // Placeholder
-        this.parseLatestCompleted = ($) => this.scrapeCard($); // Placeholder
-        this.parseRecentlyUpdated = ($) => this.scrapeCard($); // Placeholder
-        this.parseRecentlyAdded = ($) => this.scrapeCard($); // Placeholder
-        this.parseTopUpcoming = ($) => this.scrapeCard($); // Placeholder
+        // Helper methods for parsing homepage sections (fixed to select correct sections)
+        this.parseTopAiring = ($) => {
+            // #anime-featured .anif-block-01 (Top Airing)
+            const results = [];
+            $('#anime-featured .anif-block-01 ul.ulclear > li').each((i, el) => {
+                var _a;
+                const card = $(el);
+                const poster = card.find('.film-poster a, .film-poster');
+                const id = ((_a = poster.attr('href')) === null || _a === void 0 ? void 0 : _a.split('/')[1]) || poster.data('id') || card.find('.film-poster').data('id');
+                const img = card.find('img.film-poster-img');
+                const titleElement = card.find('.film-name a');
+                results.push({
+                    id: id,
+                    title: titleElement.text(),
+                    japaneseTitle: titleElement.attr('data-jname'),
+                    banner: img.attr('data-src') || img.attr('src') || null,
+                    type: card.find('.fdi-item').first().text().trim(),
+                    sub: parseInt(card.find('.tick-item.tick-sub').text()) || 0,
+                    dub: parseInt(card.find('.tick-item.tick-dub').text()) || 0,
+                    episodes: parseInt(card.find('.tick-item.tick-eps').text()) || undefined,
+                });
+            });
+            return results;
+        };
+        this.parseMostPopular = ($) => {
+            // #anime-featured .anif-block-03 (Most Popular)
+            const results = [];
+            $('#anime-featured .anif-block-03 ul.ulclear > li').each((i, el) => {
+                var _a;
+                const card = $(el);
+                const poster = card.find('.film-poster a, .film-poster');
+                const id = ((_a = poster.attr('href')) === null || _a === void 0 ? void 0 : _a.split('/')[1]) || poster.data('id') || card.find('.film-poster').data('id');
+                const img = card.find('img.film-poster-img');
+                const titleElement = card.find('.film-name a');
+                results.push({
+                    id: id,
+                    title: titleElement.text(),
+                    japaneseTitle: titleElement.attr('data-jname'),
+                    banner: img.attr('data-src') || img.attr('src') || null,
+                    type: card.find('.fdi-item').first().text().trim(),
+                    sub: parseInt(card.find('.tick-item.tick-sub').text()) || 0,
+                    dub: parseInt(card.find('.tick-item.tick-dub').text()) || 0,
+                    episodes: parseInt(card.find('.tick-item.tick-eps').text()) || undefined,
+                });
+            });
+            return results;
+        };
+        this.parseMostFavorite = ($) => {
+            // #anime-featured .anif-block-02 (Most Favorite)
+            // Note: There are two anif-block-02, one for Most Favorite, one for Latest Completed. Use the first one for Most Favorite.
+            const results = [];
+            $('#anime-featured .anif-block-02')
+                .first()
+                .find('ul.ulclear > li')
+                .each((i, el) => {
+                var _a;
+                const card = $(el);
+                const poster = card.find('.film-poster a, .film-poster');
+                const id = ((_a = poster.attr('href')) === null || _a === void 0 ? void 0 : _a.split('/')[1]) || poster.data('id') || card.find('.film-poster').data('id');
+                const img = card.find('img.film-poster-img');
+                const titleElement = card.find('.film-name a');
+                results.push({
+                    id: id,
+                    title: titleElement.text(),
+                    japaneseTitle: titleElement.attr('data-jname'),
+                    banner: img.attr('data-src') || img.attr('src') || null,
+                    type: card.find('.fdi-item').first().text().trim(),
+                    sub: parseInt(card.find('.tick-item.tick-sub').text()) || 0,
+                    dub: parseInt(card.find('.tick-item.tick-dub').text()) || 0,
+                    episodes: parseInt(card.find('.tick-item.tick-eps').text()) || undefined,
+                });
+            });
+            return results;
+        };
+        this.parseLatestCompleted = ($) => {
+            // #anime-featured .anif-block-02 (Latest Completed) - second occurrence
+            const results = [];
+            $('#anime-featured .anif-block-02')
+                .eq(1)
+                .find('ul.ulclear > li')
+                .each((i, el) => {
+                var _a;
+                const card = $(el);
+                const poster = card.find('.film-poster a, .film-poster');
+                const id = ((_a = poster.attr('href')) === null || _a === void 0 ? void 0 : _a.split('/')[1]) || poster.data('id') || card.find('.film-poster').data('id');
+                const img = card.find('img.film-poster-img');
+                const titleElement = card.find('.film-name a');
+                results.push({
+                    id: id,
+                    title: titleElement.text(),
+                    japaneseTitle: titleElement.attr('data-jname'),
+                    banner: img.attr('data-src') || img.attr('src') || null,
+                    type: card.find('.fdi-item').first().text().trim(),
+                    sub: parseInt(card.find('.tick-item.tick-sub').text()) || 0,
+                    dub: parseInt(card.find('.tick-item.tick-dub').text()) || 0,
+                    episodes: parseInt(card.find('.tick-item.tick-eps').text()) || undefined,
+                });
+            });
+            return results;
+        };
+        this.parseRecentlyUpdated = ($) => {
+            // #main-content > section:contains('Latest Episode') .flw-item
+            const results = [];
+            $("#main-content .block_area:contains('Latest Episode') .flw-item").each((i, el) => {
+                var _a;
+                const card = $(el);
+                const poster = card.find('.film-poster-ahref, .film-poster');
+                const id = ((_a = poster.attr('href')) === null || _a === void 0 ? void 0 : _a.split('/')[1]) || poster.data('id') || card.find('.film-poster').data('id');
+                const img = card.find('img.film-poster-img');
+                const titleElement = card.find('.film-name a');
+                results.push({
+                    id: id,
+                    title: titleElement.text(),
+                    japaneseTitle: titleElement.attr('data-jname'),
+                    banner: img.attr('data-src') || img.attr('src') || null,
+                    type: card.find('.fdi-item').first().text().trim(),
+                    sub: parseInt(card.find('.tick-item.tick-sub').text()) || 0,
+                    dub: parseInt(card.find('.tick-item.tick-dub').text()) || 0,
+                    episodes: parseInt(card.find('.tick-item.tick-eps').text()) || undefined,
+                });
+            });
+            return results;
+        };
+        this.parseRecentlyAdded = ($) => {
+            // #main-content > section:contains('New On HiAnime') .flw-item
+            const results = [];
+            $("#main-content .block_area:contains('New On HiAnime') .flw-item").each((i, el) => {
+                var _a;
+                const card = $(el);
+                const poster = card.find('.film-poster-ahref, .film-poster');
+                const id = ((_a = poster.attr('href')) === null || _a === void 0 ? void 0 : _a.split('/')[1]) || poster.data('id') || card.find('.film-poster').data('id');
+                const img = card.find('img.film-poster-img');
+                const titleElement = card.find('.film-name a');
+                results.push({
+                    id: id,
+                    title: titleElement.text(),
+                    japaneseTitle: titleElement.attr('data-jname'),
+                    banner: img.attr('data-src') || img.attr('src') || null,
+                    type: card.find('.fdi-item').first().text().trim(),
+                    sub: parseInt(card.find('.tick-item.tick-sub').text()) || 0,
+                    dub: parseInt(card.find('.tick-item.tick-dub').text()) || 0,
+                    episodes: parseInt(card.find('.tick-item.tick-eps').text()) || undefined,
+                });
+            });
+            return results;
+        };
+        this.parseTopUpcoming = ($) => {
+            // #main-content > section:contains('Top Upcoming') .flw-item
+            const results = [];
+            $("#main-content .block_area:contains('Top Upcoming') .flw-item").each((i, el) => {
+                var _a;
+                const card = $(el);
+                const poster = card.find('.film-poster-ahref, .film-poster');
+                const id = ((_a = poster.attr('href')) === null || _a === void 0 ? void 0 : _a.split('/')[1]) || poster.data('id') || card.find('.film-poster').data('id');
+                const img = card.find('img.film-poster-img');
+                const titleElement = card.find('.film-name a');
+                results.push({
+                    id: id,
+                    title: titleElement.text(),
+                    japaneseTitle: titleElement.attr('data-jname'),
+                    banner: img.attr('data-src') || img.attr('src') || null,
+                    type: card.find('.fdi-item').first().text().trim(),
+                    sub: parseInt(card.find('.tick-item.tick-sub').text()) || 0,
+                    dub: parseInt(card.find('.tick-item.tick-dub').text()) || 0,
+                    episodes: parseInt(card.find('.tick-item.tick-eps').text()) || undefined,
+                });
+            });
+            return results;
+        };
         this.parseGenres = ($) => {
             // Placeholder
             const genres = [];

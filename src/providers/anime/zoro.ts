@@ -971,14 +971,181 @@ class Zoro extends AnimeParser {
     }
   };
 
-  // Helper methods for parsing homepage sections (assuming they exist and return IAnimeResult[])
-  private parseTopAiring = ($: CheerioAPI): IAnimeResult[] => this.scrapeCard($); // Placeholder
-  private parseMostPopular = ($: CheerioAPI): IAnimeResult[] => this.scrapeCard($); // Placeholder
-  private parseMostFavorite = ($: CheerioAPI): IAnimeResult[] => this.scrapeCard($); // Placeholder
-  private parseLatestCompleted = ($: CheerioAPI): IAnimeResult[] => this.scrapeCard($); // Placeholder
-  private parseRecentlyUpdated = ($: CheerioAPI): IAnimeResult[] => this.scrapeCard($); // Placeholder
-  private parseRecentlyAdded = ($: CheerioAPI): IAnimeResult[] => this.scrapeCard($); // Placeholder
-  private parseTopUpcoming = ($: CheerioAPI): IAnimeResult[] => this.scrapeCard($); // Placeholder
+  // Helper methods for parsing homepage sections (fixed to select correct sections)
+  private parseTopAiring = ($: CheerioAPI): IAnimeResult[] => {
+    // #anime-featured .anif-block-01 (Top Airing)
+    const results: IAnimeResult[] = [];
+    $('#anime-featured .anif-block-01 ul.ulclear > li').each((i, el) => {
+      const card = $(el);
+      const poster = card.find('.film-poster a, .film-poster');
+      const id =
+        poster.attr('href')?.split('/')[1] || poster.data('id') || card.find('.film-poster').data('id');
+      const img = card.find('img.film-poster-img');
+      const titleElement = card.find('.film-name a');
+      results.push({
+        id: id! as string,
+        title: titleElement.text(),
+        japaneseTitle: titleElement.attr('data-jname'),
+        banner: img.attr('data-src') || img.attr('src') || null,
+        type: card.find('.fdi-item').first().text().trim() as MediaFormat,
+        sub: parseInt(card.find('.tick-item.tick-sub').text()) || 0,
+        dub: parseInt(card.find('.tick-item.tick-dub').text()) || 0,
+        episodes: parseInt(card.find('.tick-item.tick-eps').text()) || undefined,
+      });
+    });
+    return results;
+  };
+
+  private parseMostPopular = ($: CheerioAPI): IAnimeResult[] => {
+    // #anime-featured .anif-block-03 (Most Popular)
+    const results: IAnimeResult[] = [];
+    $('#anime-featured .anif-block-03 ul.ulclear > li').each((i, el) => {
+      const card = $(el);
+      const poster = card.find('.film-poster a, .film-poster');
+      const id =
+        poster.attr('href')?.split('/')[1] || poster.data('id') || card.find('.film-poster').data('id');
+      const img = card.find('img.film-poster-img');
+      const titleElement = card.find('.film-name a');
+      results.push({
+        id: id! as string,
+        title: titleElement.text(),
+        japaneseTitle: titleElement.attr('data-jname'),
+        banner: img.attr('data-src') || img.attr('src') || null,
+        type: card.find('.fdi-item').first().text().trim() as MediaFormat,
+        sub: parseInt(card.find('.tick-item.tick-sub').text()) || 0,
+        dub: parseInt(card.find('.tick-item.tick-dub').text()) || 0,
+        episodes: parseInt(card.find('.tick-item.tick-eps').text()) || undefined,
+      });
+    });
+    return results;
+  };
+
+  private parseMostFavorite = ($: CheerioAPI): IAnimeResult[] => {
+    // #anime-featured .anif-block-02 (Most Favorite)
+    // Note: There are two anif-block-02, one for Most Favorite, one for Latest Completed. Use the first one for Most Favorite.
+    const results: IAnimeResult[] = [];
+    $('#anime-featured .anif-block-02')
+      .first()
+      .find('ul.ulclear > li')
+      .each((i, el) => {
+        const card = $(el);
+        const poster = card.find('.film-poster a, .film-poster');
+        const id =
+          poster.attr('href')?.split('/')[1] || poster.data('id') || card.find('.film-poster').data('id');
+        const img = card.find('img.film-poster-img');
+        const titleElement = card.find('.film-name a');
+        results.push({
+          id: id! as string,
+          title: titleElement.text(),
+          japaneseTitle: titleElement.attr('data-jname'),
+          banner: img.attr('data-src') || img.attr('src') || null,
+          type: card.find('.fdi-item').first().text().trim() as MediaFormat,
+          sub: parseInt(card.find('.tick-item.tick-sub').text()) || 0,
+          dub: parseInt(card.find('.tick-item.tick-dub').text()) || 0,
+          episodes: parseInt(card.find('.tick-item.tick-eps').text()) || undefined,
+        });
+      });
+    return results;
+  };
+
+  private parseLatestCompleted = ($: CheerioAPI): IAnimeResult[] => {
+    // #anime-featured .anif-block-02 (Latest Completed) - second occurrence
+    const results: IAnimeResult[] = [];
+    $('#anime-featured .anif-block-02')
+      .eq(1)
+      .find('ul.ulclear > li')
+      .each((i, el) => {
+        const card = $(el);
+        const poster = card.find('.film-poster a, .film-poster');
+        const id =
+          poster.attr('href')?.split('/')[1] || poster.data('id') || card.find('.film-poster').data('id');
+        const img = card.find('img.film-poster-img');
+        const titleElement = card.find('.film-name a');
+        results.push({
+          id: id! as string,
+          title: titleElement.text(),
+          japaneseTitle: titleElement.attr('data-jname'),
+          banner: img.attr('data-src') || img.attr('src') || null,
+          type: card.find('.fdi-item').first().text().trim() as MediaFormat,
+          sub: parseInt(card.find('.tick-item.tick-sub').text()) || 0,
+          dub: parseInt(card.find('.tick-item.tick-dub').text()) || 0,
+          episodes: parseInt(card.find('.tick-item.tick-eps').text()) || undefined,
+        });
+      });
+    return results;
+  };
+
+  private parseRecentlyUpdated = ($: CheerioAPI): IAnimeResult[] => {
+    // #main-content > section:contains('Latest Episode') .flw-item
+    const results: IAnimeResult[] = [];
+    $("#main-content .block_area:contains('Latest Episode') .flw-item").each((i, el) => {
+      const card = $(el);
+      const poster = card.find('.film-poster-ahref, .film-poster');
+      const id =
+        poster.attr('href')?.split('/')[1] || poster.data('id') || card.find('.film-poster').data('id');
+      const img = card.find('img.film-poster-img');
+      const titleElement = card.find('.film-name a');
+      results.push({
+        id: id! as string,
+        title: titleElement.text(),
+        japaneseTitle: titleElement.attr('data-jname'),
+        banner: img.attr('data-src') || img.attr('src') || null,
+        type: card.find('.fdi-item').first().text().trim() as MediaFormat,
+        sub: parseInt(card.find('.tick-item.tick-sub').text()) || 0,
+        dub: parseInt(card.find('.tick-item.tick-dub').text()) || 0,
+        episodes: parseInt(card.find('.tick-item.tick-eps').text()) || undefined,
+      });
+    });
+    return results;
+  };
+
+  private parseRecentlyAdded = ($: CheerioAPI): IAnimeResult[] => {
+    // #main-content > section:contains('New On HiAnime') .flw-item
+    const results: IAnimeResult[] = [];
+    $("#main-content .block_area:contains('New On HiAnime') .flw-item").each((i, el) => {
+      const card = $(el);
+      const poster = card.find('.film-poster-ahref, .film-poster');
+      const id =
+        poster.attr('href')?.split('/')[1] || poster.data('id') || card.find('.film-poster').data('id');
+      const img = card.find('img.film-poster-img');
+      const titleElement = card.find('.film-name a');
+      results.push({
+        id: id! as string,
+        title: titleElement.text(),
+        japaneseTitle: titleElement.attr('data-jname'),
+        banner: img.attr('data-src') || img.attr('src') || null,
+        type: card.find('.fdi-item').first().text().trim() as MediaFormat,
+        sub: parseInt(card.find('.tick-item.tick-sub').text()) || 0,
+        dub: parseInt(card.find('.tick-item.tick-dub').text()) || 0,
+        episodes: parseInt(card.find('.tick-item.tick-eps').text()) || undefined,
+      });
+    });
+    return results;
+  };
+
+  private parseTopUpcoming = ($: CheerioAPI): IAnimeResult[] => {
+    // #main-content > section:contains('Top Upcoming') .flw-item
+    const results: IAnimeResult[] = [];
+    $("#main-content .block_area:contains('Top Upcoming') .flw-item").each((i, el) => {
+      const card = $(el);
+      const poster = card.find('.film-poster-ahref, .film-poster');
+      const id =
+        poster.attr('href')?.split('/')[1] || poster.data('id') || card.find('.film-poster').data('id');
+      const img = card.find('img.film-poster-img');
+      const titleElement = card.find('.film-name a');
+      results.push({
+        id: id as string,
+        title: titleElement.text(),
+        japaneseTitle: titleElement.attr('data-jname'),
+        banner: img.attr('data-src') || img.attr('src') || null,
+        type: card.find('.fdi-item').first().text().trim() as MediaFormat,
+        sub: parseInt(card.find('.tick-item.tick-sub').text()) || 0,
+        dub: parseInt(card.find('.tick-item.tick-dub').text()) || 0,
+        episodes: parseInt(card.find('.tick-item.tick-eps').text()) || undefined,
+      });
+    });
+    return results;
+  };
   private parseGenres = ($: CheerioAPI): string[] => {
     // Placeholder
     const genres: string[] = [];
