@@ -971,6 +971,24 @@ class Zoro extends AnimeParser {
     }
   };
 
+  private extractIDFromHref = (href: string | undefined): string | undefined => {
+    if (!href) return undefined;
+    // if the href is a full URL, extract the ID from the last part of the URL
+    if (href.startsWith('http')) {
+      const url = new URL(href);
+      const pathParts = url.pathname.split('/');
+      return pathParts[pathParts.length - 1];
+    }
+    // if the href is a relative URL, extract the ID from the last part of the path
+    // Example: /watch/12345
+    // Extract the ID from the last part of the path
+    // Example: /watch/12345
+    // make sure if the href is just one part like /12345
+    // Example: /12345
+    const pathParts = href.split('/');
+    return pathParts[pathParts.length - 1];
+  };
+
   // Helper methods for parsing homepage sections (fixed to select correct sections)
   private parseTopAiring = ($: CheerioAPI): IAnimeResult[] => {
     // #anime-featured .anif-block-01 (Top Airing)
@@ -978,8 +996,10 @@ class Zoro extends AnimeParser {
     $('#anime-featured .anif-block-01 ul.ulclear > li').each((i, el) => {
       const card = $(el);
       const poster = card.find('.film-poster a');
-      console.log('poster', poster.attr('href'), poster.data('id'));
-      const id = poster.attr('href') || poster.data('id') || card.find('.film-poster').data('id');
+      const id =
+        this.extractIDFromHref(poster.attr('href')) ||
+        poster.data('id') ||
+        card.find('.film-poster').data('id');
       const img = card.find('img.film-poster-img');
       const titleElement = card.find('.film-name a');
       results.push({
@@ -1002,7 +1022,10 @@ class Zoro extends AnimeParser {
     $('#anime-featured .anif-block-03 ul.ulclear > li').each((i, el) => {
       const card = $(el);
       const poster = card.find('.film-poster a');
-      const id = poster.attr('href') || poster.data('id') || card.find('.film-poster').data('id');
+      const id =
+        this.extractIDFromHref(poster.attr('href')) ||
+        poster.data('id') ||
+        card.find('.film-poster').data('id');
       const img = card.find('img.film-poster-img');
       const titleElement = card.find('.film-name a');
       results.push({
@@ -1029,7 +1052,10 @@ class Zoro extends AnimeParser {
       .each((i, el) => {
         const card = $(el);
         const poster = card.find('.film-poster a');
-        const id = poster.attr('href') || poster.data('id') || card.find('.film-poster').data('id');
+        const id =
+          this.extractIDFromHref(poster.attr('href')) ||
+          poster.data('id') ||
+          card.find('.film-poster').data('id');
         const img = card.find('img.film-poster-img');
         const titleElement = card.find('.film-name a');
         results.push({
@@ -1055,7 +1081,10 @@ class Zoro extends AnimeParser {
       .each((i, el) => {
         const card = $(el);
         const poster = card.find('.film-poster a');
-        const id = poster.attr('href') || poster.data('id') || card.find('.film-poster').data('id');
+        const id =
+          this.extractIDFromHref(poster.attr('href')) ||
+          poster.data('id') ||
+          card.find('.film-poster').data('id');
         const img = card.find('img.film-poster-img');
         const titleElement = card.find('.film-name a');
         results.push({
@@ -1077,8 +1106,11 @@ class Zoro extends AnimeParser {
     const results: IAnimeResult[] = [];
     $("#main-content .block_area:contains('Latest Episode') .flw-item").each((i, el) => {
       const card = $(el);
-      const poster = card.find('.film-poster-ahref, .film-poster');
-      const id = poster.attr('href') || poster.data('id') || card.find('.film-poster').data('id');
+      const poster = card.find('.film-poster-ahref');
+      const id =
+        this.extractIDFromHref(poster.attr('href')) ||
+        poster.data('id') ||
+        card.find('.film-poster').data('id');
       const img = card.find('img.film-poster-img');
       const titleElement = card.find('.film-name a');
       results.push({
@@ -1100,8 +1132,11 @@ class Zoro extends AnimeParser {
     const results: IAnimeResult[] = [];
     $("#main-content .block_area:contains('New On HiAnime') .flw-item").each((i, el) => {
       const card = $(el);
-      const poster = card.find('.film-poster-ahref, .film-poster');
-      const id = poster.attr('href') || poster.data('id') || card.find('.film-poster').data('id');
+      const poster = card.find('.film-poster-ahref');
+      const id =
+        this.extractIDFromHref(poster.attr('href')) ||
+        poster.data('id') ||
+        card.find('.film-poster').data('id');
       const img = card.find('img.film-poster-img');
       const titleElement = card.find('.film-name a');
       results.push({
@@ -1123,8 +1158,11 @@ class Zoro extends AnimeParser {
     const results: IAnimeResult[] = [];
     $("#main-content .block_area:contains('Top Upcoming') .flw-item").each((i, el) => {
       const card = $(el);
-      const poster = card.find('.film-poster-ahref, .film-poster');
-      const id = poster.attr('href') || poster.data('id') || card.find('.film-poster').data('id');
+      const poster = card.find('.film-poster-ahref');
+      const id =
+        this.extractIDFromHref(poster.attr('href')) ||
+        poster.data('id') ||
+        card.find('.film-poster').data('id');
       const img = card.find('img.film-poster-img');
       const titleElement = card.find('.film-name a');
       results.push({
