@@ -485,10 +485,9 @@ class Zoro extends models_1.AnimeParser {
             // #main-content > section:contains('Latest Episode') .flw-item
             const results = [];
             $("#main-content .block_area:contains('Latest Episode') .flw-item").each((i, el) => {
-                var _a;
                 const card = $(el);
                 const poster = card.find('.film-poster-ahref, .film-poster');
-                const id = ((_a = poster.attr('href')) === null || _a === void 0 ? void 0 : _a.split('/')[1]) || poster.data('id') || card.find('.film-poster').data('id');
+                const id = poster.attr('href') || poster.data('id') || card.find('.film-poster').data('id');
                 const img = card.find('img.film-poster-img');
                 const titleElement = card.find('.film-name a');
                 results.push({
@@ -508,10 +507,9 @@ class Zoro extends models_1.AnimeParser {
             // #main-content > section:contains('New On HiAnime') .flw-item
             const results = [];
             $("#main-content .block_area:contains('New On HiAnime') .flw-item").each((i, el) => {
-                var _a;
                 const card = $(el);
                 const poster = card.find('.film-poster-ahref, .film-poster');
-                const id = ((_a = poster.attr('href')) === null || _a === void 0 ? void 0 : _a.split('/')[1]) || poster.data('id') || card.find('.film-poster').data('id');
+                const id = poster.attr('href') || poster.data('id') || card.find('.film-poster').data('id');
                 const img = card.find('img.film-poster-img');
                 const titleElement = card.find('.film-name a');
                 results.push({
@@ -531,10 +529,9 @@ class Zoro extends models_1.AnimeParser {
             // #main-content > section:contains('Top Upcoming') .flw-item
             const results = [];
             $("#main-content .block_area:contains('Top Upcoming') .flw-item").each((i, el) => {
-                var _a;
                 const card = $(el);
                 const poster = card.find('.film-poster-ahref, .film-poster');
-                const id = ((_a = poster.attr('href')) === null || _a === void 0 ? void 0 : _a.split('/')[1]) || poster.data('id') || card.find('.film-poster').data('id');
+                const id = poster.attr('href') || poster.data('id') || card.find('.film-poster').data('id');
                 const img = card.find('img.film-poster-img');
                 const titleElement = card.find('.film-name a');
                 results.push({

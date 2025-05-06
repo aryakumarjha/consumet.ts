@@ -1078,8 +1078,7 @@ class Zoro extends AnimeParser {
     $("#main-content .block_area:contains('Latest Episode') .flw-item").each((i, el) => {
       const card = $(el);
       const poster = card.find('.film-poster-ahref, .film-poster');
-      const id =
-        poster.attr('href')?.split('/')[1] || poster.data('id') || card.find('.film-poster').data('id');
+      const id = poster.attr('href') || poster.data('id') || card.find('.film-poster').data('id');
       const img = card.find('img.film-poster-img');
       const titleElement = card.find('.film-name a');
       results.push({
@@ -1102,8 +1101,7 @@ class Zoro extends AnimeParser {
     $("#main-content .block_area:contains('New On HiAnime') .flw-item").each((i, el) => {
       const card = $(el);
       const poster = card.find('.film-poster-ahref, .film-poster');
-      const id =
-        poster.attr('href')?.split('/')[1] || poster.data('id') || card.find('.film-poster').data('id');
+      const id = poster.attr('href') || poster.data('id') || card.find('.film-poster').data('id');
       const img = card.find('img.film-poster-img');
       const titleElement = card.find('.film-name a');
       results.push({
@@ -1126,8 +1124,7 @@ class Zoro extends AnimeParser {
     $("#main-content .block_area:contains('Top Upcoming') .flw-item").each((i, el) => {
       const card = $(el);
       const poster = card.find('.film-poster-ahref, .film-poster');
-      const id =
-        poster.attr('href')?.split('/')[1] || poster.data('id') || card.find('.film-poster').data('id');
+      const id = poster.attr('href') || poster.data('id') || card.find('.film-poster').data('id');
       const img = card.find('img.film-poster-img');
       const titleElement = card.find('.film-name a');
       results.push({
