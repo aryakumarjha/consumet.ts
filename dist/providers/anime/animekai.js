@@ -494,7 +494,7 @@ class AnimeKai extends models_1.AnimeParser {
             return res;
         }
         catch (error) {
-            throw new Error('Something went wrong. Please try again later.');
+            throw new Error('Something went wrong. Please try again later. Original error: ' + error);
         }
     }
     async fetchSearchSuggestions(query) {
