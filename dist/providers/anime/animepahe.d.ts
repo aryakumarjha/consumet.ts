@@ -19,6 +19,7 @@ declare class AnimePahe extends AnimeParser {
      */
     fetchEpisodeSources: (episodeId: string) => Promise<ISource>;
     private fetchEpisodes;
+    fetchLatestReleases: (page: number) => Promise<ISearch<any>>;
     /**
      * @deprecated
      * @attention AnimePahe doesn't support this method

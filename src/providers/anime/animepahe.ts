@@ -240,6 +240,55 @@ class AnimePahe extends AnimeParser {
     ] as IAnimeEpisode[];
   };
 
+  fetchLatestReleases = async (page: number): Promise<ISearch<any>> => {
+    // https://animepahe.ru/api?m=airing&page=2
+    const res = await this.client.get(`${this.baseUrl}/api?m=airing&page=${page}`, {
+      headers: this.Headers(false),
+    });
+
+    const animeList: any[] = res.data.data.map((item: any) => ({
+      id: item.anime_session,
+      title: item.anime_title,
+      image: item.snapshot,
+      rating: 0,
+      releaseDate: item.created_at,
+      type: 'TV',
+      episodeId: `${item.anime_session}/${item.session}`,
+      episodeNumber: item.episode,
+      episodeTitle: item.fansub,
+      episodeImage: item.snapshot,
+      episodeUrl: `${this.baseUrl}/play/${item.anime_session}/${item.session}`,
+      episodeDuration: item.duration,
+      episodeReleaseDate: item.created_at,
+      episodeStatus: item.completed ? MediaStatus.COMPLETED : MediaStatus.ONGOING,
+    }));
+
+    return {
+      currentPage: res.data.current_page,
+      totalPages: res.data.last_page,
+      totalResults: res.data.total,
+      hasNextPage: res.data.next_page_url !== null,
+      results: animeList.map(item => ({
+        id: item.id,
+        title: item.title,
+        image: item.image,
+        rating: item.rating,
+        releaseDate: item.releaseDate,
+        type: item.type,
+        episode: {
+          id: item.episodeId,
+          number: item.episodeNumber,
+          title: item.episodeTitle,
+          image: item.episodeImage,
+          url: item.episodeUrl,
+          duration: item.episodeDuration,
+          releaseDate: item.episodeReleaseDate,
+          status: item.episodeStatus,
+        },
+      })),
+    };
+  };
+
   /**
    * @deprecated
    * @attention AnimePahe doesn't support this method
